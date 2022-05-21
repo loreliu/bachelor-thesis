@@ -46,8 +46,8 @@ xfun::session_info(c('GGally', 'ggplot2', 'dplyr', 'tidyr', 'forcats', 'viridis'
 xfun::pkg_attach2(c('GGally', 'ggplot2', 'dplyr', 'tidyr', 'forcats','viridis'))
 
 
-timeline_840 = read.csv('https://raw.githubusercontent.com/loreliu/bachelor-thesis/main/timeline_840.csv', header=TRUE,
-    encoding='UTF-8')
+timeline_840 = read.csv('https://raw.githubusercontent.com/loreliu/bachelor-thesis/main/timeline_840.csv', header = TRUE,
+    encoding = 'UTF-8')
 # timeline_840 = read.csv('timeline_840.csv', header = TRUE, encoding = 'UTF-8')
 
 # 因子化 winningTeam
