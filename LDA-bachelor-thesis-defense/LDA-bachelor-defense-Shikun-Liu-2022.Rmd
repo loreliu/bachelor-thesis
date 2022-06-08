@@ -356,12 +356,12 @@ class: inverse, center, middle
 ## 游戏对局数据说明
 
 ```{r include = FALSE}
-xfun::pkg_attach2(c('GGally', 'ggplot2', 'dplyr', 'tidyr', 'forcats','viridis'))
+xfun::pkg_attach2(c('GGally', 'ggplot2', 'dplyr', 'tidyr', 'forcats', 'viridis'))
 
 
-# timeline_840 = read.csv('https://raw.githubusercontent.com/loreliu/bachelor-thesis/main/timeline_840.csv', header = TRUE,
-#     encoding = 'UTF-8')
-timeline_840 = read.csv('timeline_840.csv', header = TRUE, encoding = 'UTF-8')
+timeline_840 = read.csv('https://raw.githubusercontent.com/loreliu/bachelor-thesis/main/timeline_840.csv', header = TRUE,
+    encoding = 'UTF-8')
+# timeline_840 = read.csv('timeline_840.csv', header = TRUE, encoding = 'UTF-8')
 
 # 因子化 winningTeam
 timeline_840$winningTeam = as.factor(timeline_840$winningTeam)
@@ -501,12 +501,12 @@ ADC对位经济差在达到3500-4000左右时胜率开始下降，4000以上时�
 ```{r echo=FALSE, comment=''}
 # 蓝色方夺取小龙胜率
 df_prec_dragons = data.frame() # 存储计算结果
-for(i in 0:2) {
-    for(j in 0:2) {
+for (i in 0:2) {
+    for (j in 0:2) {
         # 计算胜率
         tl_subset = timeline_840[timeline_840$t1Dragons == i & timeline_840$t2Dragons == j, ]
-        prec = sum(tl_subset$winningTeam == 100)/nrow(tl_subset)
-        df_prec_dragons[i+1, j+1] = prec
+        prec = sum(tl_subset$winningTeam == 100) / nrow(tl_subset)
+        df_prec_dragons[i + 1, j + 1] = prec
     }
 }
 rownames(df_prec_dragons) = c('blue_team_0', 'blue_team_1', 'blue_team_2')
@@ -519,12 +519,12 @@ df_prec_dragons
 ```{r echo=FALSE, comment=''}
 # 蓝色方夺取峡谷先锋胜率
 df_prec_rift = data.frame() # 存储计算结果
-for(i in 0:1) {
-    for(j in 0:1) {
+for (i in 0:1) {
+    for (j in 0:1) {
         # 计算胜率
-        tl_subset = timeline_840[timeline_840$t1Rift==i & timeline_840$t2Rift ==j, ]
-        prec = sum(tl_subset$winningTeam == 100)/nrow(tl_subset)
-        df_prec_rift[i+1, j+1] = prec
+        tl_subset = timeline_840[timeline_840$t1Rift == i & timeline_840$t2Rift == j, ]
+        prec = sum(tl_subset$winningTeam == 100) / nrow(tl_subset)
+        df_prec_rift[i + 1, j + 1] = prec
     }
 }
 rownames(df_prec_rift) = c('blue_team_0', 'blue_team_1')
@@ -544,20 +544,20 @@ df_prec_rift
 # 蓝色方摧毁防御塔胜率
 win_prec_tower = function(role, t1TowerTaken, t2TowerTaken) {
     df_prec_tower = data.frame() # 存储计算结果
-    if(role == 'top' | role == 'bot'){
+    if (role == 'top' | role == 'bot') {
             towers = 4
             }
             else {
                towers = 6
             }
-    for(i in 0:towers){
-        for(j in 0:towers){
+    for (i in 0:towers) {
+        for (j in 0:towers) {
             tl_subset = timeline_840[t2TowerTaken == i & t1TowerTaken == j, ]
-            prec = sum(tl_subset$winningTeam == 100)/nrow(tl_subset)
-            df_prec_tower[i+1, j+1] = prec
+            prec = sum(tl_subset$winningTeam == 100) / nrow(tl_subset)
+            df_prec_tower[i + 1, j + 1] = prec
         }
-        rownames(df_prec_tower)[i+1] = paste('blue_team_', i)
-        colnames(df_prec_tower)[i+1] = paste('red_team_', i)
+        rownames(df_prec_tower)[i + 1] = paste('blue_team_', i)
+        colnames(df_prec_tower)[i + 1] = paste('red_team_', i)
     }
     return(df_prec_tower)
 }
@@ -625,15 +625,13 @@ Bayes判别函数及判别规则
 
 - 由于 [MASS::lda](https://www.rdocumentation.org/packages/MASS/versions/7.3-57/topics/lda) 使用 Bayes 判别计算判别函数，所以需要检查不同组别中各预测变量的正态性、组别间的方差同质性以及各变量间是否有多重共线性。
 
-- 由于样本量太大，Shapiro-Wilk 检验显著，拒绝零假设“总体服从正态分布”。但从各位置的对位经济差直方图中可以看出是近似服从正态分布的，其他几个变量因为取值不是连续的，不服从正态分布。
+- 从各位置的对位经济差直方图中可以看出各位置对位经济差是近似服从正态分布的，因此最终我们不拒绝零假设，认为各位置的对位经济差服从正态分布。其他几个变量因为取值不是连续的，不服从正态分布。
 
 - 小龙夺取数之差、峡谷先锋夺取数之差及各位置对位经济差的 BoxM 检验不显著，p值为0.4892，认为满足方差同质性。其他6个防御塔丢失数变量不满足方差同质性。
 
 ???
 
-在检验各位置对位经济差是否服从正态分布时，
-
-但从各位置的对位经济差直方图可以看出各位置对位经济差是近似服从正态分布的。其他几个变量因为取值不是连续的，不服从正态分布。
+在检验各位置对位经济差是否服从正态分布时，Shapiro-Wilk 检验显著，拒绝零假设“总体服从正态分布”。但此时的检验显著可能是由于样本量太大造成的，也就是说 Shapiro-Wilk 正态性检验的结论不可靠，还需要根据效应值的大小决定是否真正拒绝零假设，在此处可根据样本中各变量的直方图判断是否真正拒绝零假设。
 
 ---
 
